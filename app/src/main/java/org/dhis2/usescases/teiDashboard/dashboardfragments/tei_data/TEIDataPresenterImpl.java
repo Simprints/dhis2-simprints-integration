@@ -30,6 +30,7 @@ import org.dhis2.utils.EventMode;
 import org.dhis2.utils.Result;
 import org.dhis2.utils.analytics.AnalyticsHelper;
 import org.dhis2.utils.filters.FilterManager;
+import org.dhis2.utils.simprints.SimprintsHelper;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.event.Event;
@@ -375,6 +376,12 @@ class TEIDataPresenterImpl implements TEIDataContracts.Presenter {
     @Override
     public void onEventSelected(String uid, EventStatus eventStatus, View sharedView) {
         if (eventStatus == EventStatus.ACTIVE || eventStatus == EventStatus.COMPLETED) {
+
+            // TODO: HILA - OPEN SIMPRINTS INTENT
+            // TODO: HILA - GET THE USER DETAILS AND EXTRACT THE GUID
+//            Intent simIntent = SimprintsHelper.getInstance().simHelper.verify("", "");
+//            view.openEventCapture(simIntent);
+
             Intent intent = new Intent(view.getContext(), EventCaptureActivity.class);
             intent.putExtras(EventCaptureActivity.getActivityBundle(uid, programUid, EventMode.CHECK));
             view.openEventCapture(intent);

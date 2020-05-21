@@ -229,6 +229,9 @@ public class EventCaptureRepositoryImpl implements EventCaptureContract.EventCap
 
     @Override
     public Flowable<List<FormSectionViewModel>> eventSections() {
+
+        // TODO: HILA: Here's where the sections are generated
+
         return d2.eventModule().events().uid(eventUid).get()
                 .map(eventSingle -> {
                     List<FormSectionViewModel> formSection = new ArrayList<>();

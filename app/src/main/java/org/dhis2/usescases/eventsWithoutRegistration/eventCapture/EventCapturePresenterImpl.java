@@ -260,6 +260,8 @@ public class EventCapturePresenterImpl implements EventCaptureContract.Presenter
 
                                                             eventSectionModels.add(EventSectionModel.create(sectionModel.label(), sectionModel.sectionUid(), cont, finalFields.keySet().size()));
 
+                                                            // TODO: HILA - here is where section items are created
+
                                                             boolean isOpen = sectionModel.sectionUid().equals(section);
                                                             finalFieldList.add(
                                                                     SectionViewModel.create(
