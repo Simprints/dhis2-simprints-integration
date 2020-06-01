@@ -12,6 +12,7 @@ public interface FieldViewModelFactory {
 
     @NonNull
     FieldViewModel create(@NonNull String id,
+                          @NonNull String biometrics,
                           @NonNull String label,
                           @NonNull ValueType valueType,
                           @NonNull Boolean mandatory,

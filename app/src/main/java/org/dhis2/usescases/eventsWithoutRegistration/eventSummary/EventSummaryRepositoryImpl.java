@@ -164,7 +164,7 @@ public class EventSummaryRepositoryImpl implements EventSummaryRepository {
         if (ValueType.valueOf(valueTypeName) == ValueType.ORGANISATION_UNIT && !DhisTextUtils.Companion.isEmpty(dataValue)) {
             dataValue = dataValue + "_ou_" + d2.organisationUnitModule().organisationUnits().uid(dataValue).blockingGet().displayName();
         }
-        return fieldFactory.create(uid, formName == null ? displayName : formName,
+        return fieldFactory.create(uid, "", formName == null ? displayName : formName,
                 ValueType.valueOf(valueTypeName), mandatory, optionSet, dataValue,
                 programStageSection, allowFurureDates,
                 eventStatus == EventStatus.ACTIVE,

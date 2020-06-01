@@ -297,7 +297,7 @@ public class EventCaptureRepositoryImpl implements EventCaptureContract.EventCap
                     ObjectStyle objectStyle = option.style();
 
                     renderList.add(fieldFactory.create(
-                            fieldViewModel.uid() + "." + option.uid(),
+                            fieldViewModel.uid() + "." + option.uid(), "",
                             option.displayName() + ImageViewModel.NAME_CODE_DELIMITATOR + option.code(), ValueType.TEXT, false,
                             fieldViewModel.optionSet(), fieldViewModel.value(), fieldViewModel.programStageSection(),
                             fieldViewModel.allowFutureDate(), fieldViewModel.editable() == null ? false : fieldViewModel.editable(), renderingType, fieldViewModel.description(), fieldRendering, options.size(), objectStyle, fieldViewModel.fieldMask()));
@@ -414,7 +414,7 @@ public class EventCaptureRepositoryImpl implements EventCaptureContract.EventCap
                         ProgramStageSectionRenderingType renderingType = programStageSection != null && programStageSection.renderType() != null &&
                                 programStageSection.renderType().mobile() != null ?
                                 programStageSection.renderType().mobile().type() : null;
-                        return fieldFactory.create(uid, formName == null ? displayName : formName,
+                        return fieldFactory.create(uid, "", formName == null ? displayName : formName,
                                 valueType, mandatory, optionSet, dataValue,
                                 programStageSection != null ? programStageSection.uid() : null, allowFurureDates,
                                 isEventEditable,

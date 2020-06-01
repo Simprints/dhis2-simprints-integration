@@ -379,12 +379,12 @@ class TEIDataPresenterImpl implements TEIDataContracts.Presenter {
 
             // TODO: HILA - OPEN SIMPRINTS INTENT
             // TODO: HILA - GET THE USER DETAILS AND EXTRACT THE GUID
-//            Intent simIntent = SimprintsHelper.getInstance().simHelper.verify("", "");
-//            view.openEventCapture(simIntent);
+            Intent simIntent = SimprintsHelper.getInstance().simHelper.verify("", "");
+            view.openEventCapture(simIntent);
 
-            Intent intent = new Intent(view.getContext(), EventCaptureActivity.class);
-            intent.putExtras(EventCaptureActivity.getActivityBundle(uid, programUid, EventMode.CHECK));
-            view.openEventCapture(intent);
+//            Intent intent = new Intent(view.getContext(), EventCaptureActivity.class);
+//            intent.putExtras(EventCaptureActivity.getActivityBundle(uid, programUid, EventMode.CHECK));
+//            view.openEventCapture(intent);
         } else {
             Event event = d2.eventModule().events().uid(uid).blockingGet();
             Intent intent = new Intent(view.getContext(), EventInitialActivity.class);

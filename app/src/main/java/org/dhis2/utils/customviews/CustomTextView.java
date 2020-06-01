@@ -59,6 +59,7 @@ public class CustomTextView extends FieldLayout {
     private boolean isLongText;
     private View descriptionLabel;
     private View dummy;
+    private TextView biometricsButton;
 
     public CustomTextView(Context context) {
         super(context);
@@ -95,6 +96,7 @@ public class CustomTextView extends FieldLayout {
         icon = findViewById(R.id.renderImage);
         descriptionLabel = binding.getRoot().findViewById(R.id.descriptionLabel);
         dummy = findViewById(R.id.dummyFocusView);
+        biometricsButton = findViewById(R.id.biometricButton);
 
         descIcon = findViewById(R.id.descIcon);
 
@@ -216,6 +218,15 @@ public class CustomTextView extends FieldLayout {
         this.isBgTransparent = isBgTransparent;
         this.isLongText = isLongText;
         setLayout();
+    }
+
+    public void setAsBiometrics() {
+        ViewGroup v = (ViewGroup)findViewById(R.id.rootView);
+        for (int i = 0; i < v.getChildCount(); i++) {
+            View current = v.getChildAt(i);
+            current.setVisibility(View.GONE);
+        }
+        biometricsButton.setVisibility(View.VISIBLE);
     }
 
     public void setValueType(ValueType valueType) {

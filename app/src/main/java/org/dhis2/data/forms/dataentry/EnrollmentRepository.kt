@@ -190,7 +190,7 @@ class EnrollmentRepository(
         }
 
         val fieldViewModel = fieldFactory.create(
-            attribute.uid(),
+            attribute.uid(), attribute.code() ?: "",
             attribute.displayName() ?: "",
             valueType!!,
             mandatory,
