@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
@@ -227,6 +228,15 @@ public class CustomTextView extends FieldLayout {
             current.setVisibility(View.GONE);
         }
         biometricsButton.setVisibility(View.VISIBLE);
+
+        biometricsButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                // TODO: FIRE SIMPRINTS INTENT
+                Toast.makeText(biometricsButton.getContext(), "Get Biometrics", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     public void setValueType(ValueType valueType) {
