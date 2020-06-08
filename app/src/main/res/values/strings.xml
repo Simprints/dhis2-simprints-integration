@@ -690,4 +690,5 @@
     <string name="filter_sync_not_synced">Not Synced</string>
     <string name="filter_sync_error">Sync Error</string>
     <string name="filter_sync_sms">SMS Synced</string>
+    <string name="biometrics_label">Biometrics:</string>
 </resources>
