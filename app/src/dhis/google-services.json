@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:82834045260:android:d9ac84187601a4ea",
         "android_client_info": {
-          "package_name": "com.dhis2"
+          "package_name": "org.simprints.dhis2"
         }
       },
       "oauth_client": [
@@ -18,7 +18,7 @@
           "client_id": "82834045260-f2lgs43899r9ic0aqi7qk2bk2praeg00.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.dhis2",
+            "package_name": "org.simprints.dhis2",
             "certificate_hash": "bd61679cdfeda8fc4e4f70bb52693c02b0798005"
           }
         },
@@ -26,7 +26,7 @@
           "client_id": "82834045260-i38idvbdli854997vl4lddn7p71381n5.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.dhis2",
+            "package_name": "org.simprints.dhis2",
             "certificate_hash": "239ae0a8259b8fff7fd03fad696690a457b067a8"
           }
         },
@@ -55,7 +55,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:82834045260:android:aa11c2c7be8ba914",
         "android_client_info": {
-          "package_name": "com.dhis2.alpha"
+          "package_name": "org.simprints.dhis2.alpha"
         }
       },
       "oauth_client": [
@@ -84,7 +84,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:82834045260:android:ed9871871ea74413",
         "android_client_info": {
-          "package_name": "com.dhis2.beta"
+          "package_name": "org.simprints.dhis2.beta"
         }
       },
       "oauth_client": [
@@ -113,7 +113,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:82834045260:android:9f732326b0b9e7c6",
         "android_client_info": {
-          "package_name": "com.dhis2.debug"
+          "package_name": "org.simprints.dhis2.debug"
         }
       },
       "oauth_client": [
@@ -121,7 +121,7 @@
           "client_id": "82834045260-gmppg0u4uuuith1fteqj3ff97u8vum89.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.dhis2.debug",
+            "package_name": "org.simprints.dhis2.debug",
             "certificate_hash": "bd61679cdfeda8fc4e4f70bb52693c02b0798005"
           }
         },
@@ -150,7 +150,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:82834045260:android:d64d6841de40144a",
         "android_client_info": {
-          "package_name": "com.dhis2.experimental"
+          "package_name": "org.simprints.dhis2.experimental"
         }
       },
       "oauth_client": [
@@ -179,7 +179,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:82834045260:android:95db483250b5b71942f7e9",
         "android_client_info": {
-          "package_name": "com.dhis2.training"
+          "package_name": "org.simprints.dhis2.training"
         }
       },
       "oauth_client": [
