@@ -16,6 +16,7 @@ import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.simprints.libsimprints.Registration
 import io.reactivex.Flowable
 import org.dhis2.App
 import org.dhis2.R
@@ -153,6 +154,18 @@ class EnrollmentActivity : ActivityGlobalAbstract(), EnrollmentView {
                         ),
                         data.getStringExtra(MapSelectorActivity.DATA_EXTRA), requestCode
                     )
+                }
+                SIMPRINTS_UNIQUE_REQUEST -> {
+                    val check = data!!.getBooleanExtra(com.simprints.libsimprints.Constants.SIMPRINTS_BIOMETRICS_COMPLETE_CHECK, false);
+                    if(check) {
+                        //Success!
+                        val registration: Registration = data!!.getParcelableExtra(com.simprints.libsimprints.Constants.SIMPRINTS_REGISTRATION);
+                        val uniqueId = registration.getGuid();
+                        Toast.makeText(context, "Success!" + uniqueId , Toast.LENGTH_LONG).show();
+                    }else{
+                        //Failed!
+                        Toast.makeText(context, "Failed!", Toast.LENGTH_LONG).show();
+                    }
                 }
                 GALLERY_REQUEST -> {
                     try {

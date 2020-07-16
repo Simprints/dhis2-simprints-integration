@@ -1,7 +1,9 @@
 package org.dhis2.utils.customviews;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.text.InputFilter;
@@ -28,6 +30,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import org.dhis2.BR;
 import org.dhis2.R;
 import org.dhis2.utils.ObjectStyleUtils;
+import org.dhis2.utils.simprints.SimprintsHelper;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.program.ProgramStageSectionRenderingType;
@@ -35,6 +38,7 @@ import org.hisp.dhis.android.core.program.ProgramStageSectionRenderingType;
 import java.util.regex.Pattern;
 
 import static android.text.TextUtils.isEmpty;
+import static org.dhis2.utils.Constants.SIMPRINTS_UNIQUE_REQUEST;
 
 /**
  * QUADRAM. Created by frodriguez on 1/17/2018.
@@ -235,6 +239,9 @@ public class CustomTextView extends FieldLayout {
 
                 // TODO: FIRE SIMPRINTS INTENT
                 Toast.makeText(biometricsButton.getContext(), "Get Biometrics", Toast.LENGTH_LONG).show();
+
+                Intent intent = SimprintsHelper.getInstance().simHelper.register("Module ID");;
+                ((Activity)getContext()).startActivityForResult(intent,  SIMPRINTS_UNIQUE_REQUEST);
             }
         });
     }
