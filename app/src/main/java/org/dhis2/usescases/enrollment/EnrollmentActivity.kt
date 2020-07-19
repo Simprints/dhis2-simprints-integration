@@ -38,6 +38,7 @@ import org.dhis2.utils.Constants.GALLERY_REQUEST
 import org.dhis2.utils.Constants.PROGRAM_UID
 import org.dhis2.utils.Constants.RQ_QR_SCANNER
 import org.dhis2.utils.Constants.TEI_UID
+import org.dhis2.utils.Constants.SIMPRINTS_UNIQUE_REQUEST
 import org.dhis2.utils.EventMode
 import org.dhis2.utils.FileResourcesUtil
 import org.dhis2.utils.customviews.AlertBottomDialog
