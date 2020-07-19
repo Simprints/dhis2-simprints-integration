@@ -7,8 +7,7 @@ import io.reactivex.flowables.ConnectableFlowable
 import io.reactivex.functions.BiFunction
 import io.reactivex.processors.FlowableProcessor
 import io.reactivex.processors.PublishProcessor
-import java.util.concurrent.TimeUnit
-import kotlin.collections.set
+import io.reactivex.rxkotlin.plusAssign
 import org.dhis2.Bindings.profilePicturePath
 import org.dhis2.Bindings.toDate
 import org.dhis2.R
@@ -19,6 +18,7 @@ import org.dhis2.data.forms.dataentry.ValueStore
 import org.dhis2.data.forms.dataentry.ValueStoreImpl
 import org.dhis2.data.forms.dataentry.fields.FieldViewModel
 import org.dhis2.data.forms.dataentry.fields.display.DisplayViewModel
+import org.dhis2.data.forms.dataentry.fields.edittext.EditTextViewModel
 import org.dhis2.data.forms.dataentry.fields.option_set.OptionSetViewModel
 import org.dhis2.data.forms.dataentry.fields.section.SectionViewModel
 import org.dhis2.data.forms.dataentry.fields.spinner.SpinnerViewModel
@@ -45,6 +45,8 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceObjectRepos
 import org.hisp.dhis.rules.models.RuleActionShowError
 import org.hisp.dhis.rules.models.RuleEffect
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
+import kotlin.collections.set
 
 private const val TAG = "EnrollmentPresenter"
 
@@ -604,4 +606,19 @@ class EnrollmentPresenterImpl(
             }
         }
     }
+
+    fun onSimprintsGuidReceived(guid: String) {
+        disposable += dataEntryRepository
+            .list()
+            .map { fieldViewModels ->
+                val biometricViewModel = fieldViewModels.firstOrNull { it is EditTextViewModel && it.code() == "biometrics" }
+                    ?: throw IllegalStateException("Shouldn't have been allowed to start Simprints without Biometrics ViewModel")
+                return@map biometricViewModel as EditTextViewModel
+            }
+            .subscribe(
+                { viewModel -> valueStore.save(viewModel.uid(), guid) },
+                { Timber.tag(TAG).e(it) }
+            )
+    }
+
 }

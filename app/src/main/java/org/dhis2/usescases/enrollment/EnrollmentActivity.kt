@@ -16,6 +16,8 @@ import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.simprints.libsimprints.Constants.SIMPRINTS_BIOMETRICS_COMPLETE_CHECK
+import com.simprints.libsimprints.Constants.SIMPRINTS_REGISTRATION
 import com.simprints.libsimprints.Registration
 import io.reactivex.Flowable
 import org.dhis2.App
@@ -37,8 +39,8 @@ import org.dhis2.utils.Constants.ENROLLMENT_UID
 import org.dhis2.utils.Constants.GALLERY_REQUEST
 import org.dhis2.utils.Constants.PROGRAM_UID
 import org.dhis2.utils.Constants.RQ_QR_SCANNER
-import org.dhis2.utils.Constants.TEI_UID
 import org.dhis2.utils.Constants.SIMPRINTS_UNIQUE_REQUEST
+import org.dhis2.utils.Constants.TEI_UID
 import org.dhis2.utils.EventMode
 import org.dhis2.utils.FileResourcesUtil
 import org.dhis2.utils.customviews.AlertBottomDialog
@@ -157,13 +159,14 @@ class EnrollmentActivity : ActivityGlobalAbstract(), EnrollmentView {
                     )
                 }
                 SIMPRINTS_UNIQUE_REQUEST -> {
-                    val check = data!!.getBooleanExtra(com.simprints.libsimprints.Constants.SIMPRINTS_BIOMETRICS_COMPLETE_CHECK, false);
-                    if(check) {
+                    val check = data?.getBooleanExtra(SIMPRINTS_BIOMETRICS_COMPLETE_CHECK, false) ?: false
+                    if (data != null && check) {
                         //Success!
-                        val registration: Registration = data!!.getParcelableExtra(com.simprints.libsimprints.Constants.SIMPRINTS_REGISTRATION);
-                        val uniqueId = registration.getGuid();
-                        Toast.makeText(context, "Success!" + uniqueId , Toast.LENGTH_LONG).show();
-                    }else{
+                        val registration: Registration = data.getParcelableExtra(SIMPRINTS_REGISTRATION)
+                        // Now that we have the GUID, find the binding.customEdittext that corresponds to EditTextViewModel with code
+                        // "biometrics" and enter the GUID as the binding.customEdittext.getEditText().setText(GUID);
+                        presenter.onSimprintsGuidReceived(registration.guid)
+                    } else {
                         //Failed!
                         Toast.makeText(context, "Failed!", Toast.LENGTH_LONG).show();
                     }
