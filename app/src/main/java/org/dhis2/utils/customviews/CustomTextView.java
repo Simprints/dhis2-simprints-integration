@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.text.InputFilter;
@@ -35,6 +37,7 @@ import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.program.ProgramStageSectionRenderingType;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
 import static android.text.TextUtils.isEmpty;
@@ -237,11 +240,16 @@ public class CustomTextView extends FieldLayout {
             @Override
             public void onClick(View v) {
 
-                // TODO: FIRE SIMPRINTS INTENT
-                Toast.makeText(biometricsButton.getContext(), "Get Biometrics", Toast.LENGTH_LONG).show();
+                //Launch Simprints App Intent - ProjectId, UserId, ModuleId.
+                Intent intent = SimprintsHelper.getInstance().simHelper.register("Module ID");
 
-                Intent intent = SimprintsHelper.getInstance().simHelper.register("Module ID");;
-                ((Activity)getContext()).startActivityForResult(intent,  SIMPRINTS_UNIQUE_REQUEST);
+                PackageManager manager = getContext().getPackageManager();
+                List<ResolveInfo> infos = manager.queryIntentActivities(intent, 0);
+                if (infos.size() > 0) {
+                    ((Activity)getContext()).startActivityForResult(intent,  SIMPRINTS_UNIQUE_REQUEST);
+                } else {
+                    Toast.makeText(biometricsButton.getContext(), "Please download simprints app!", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
