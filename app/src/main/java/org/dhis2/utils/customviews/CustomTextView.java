@@ -22,7 +22,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ViewDataBinding;
@@ -41,7 +40,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import static android.text.TextUtils.isEmpty;
-import static org.dhis2.utils.Constants.SIMPRINTS_UNIQUE_REQUEST;
+import static org.dhis2.utils.Constants.SIMPRINTS_ENROLL_REQUEST;
 
 /**
  * QUADRAM. Created by frodriguez on 1/17/2018.
@@ -246,7 +245,7 @@ public class CustomTextView extends FieldLayout {
                 PackageManager manager = getContext().getPackageManager();
                 List<ResolveInfo> infos = manager.queryIntentActivities(intent, 0);
                 if (infos.size() > 0) {
-                    ((Activity)getContext()).startActivityForResult(intent,  SIMPRINTS_UNIQUE_REQUEST);
+                    ((Activity)getContext()).startActivityForResult(intent, SIMPRINTS_ENROLL_REQUEST);
                 } else {
                     Toast.makeText(biometricsButton.getContext(), "Please download simprints app!", Toast.LENGTH_SHORT).show();
                 }

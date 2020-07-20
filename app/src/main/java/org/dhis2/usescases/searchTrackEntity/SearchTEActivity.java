@@ -5,6 +5,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
@@ -26,6 +28,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.PopupMenu;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -57,6 +60,7 @@ import com.mapbox.mapboxsdk.style.layers.PropertyFactory;
 import com.mapbox.mapboxsdk.style.layers.SymbolLayer;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonOptions;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
+import com.simprints.libsimprints.Identification;
 
 import org.dhis2.App;
 import org.dhis2.R;
@@ -85,6 +89,7 @@ import org.dhis2.utils.maps.MapLayerDialog;
 import org.dhis2.utils.maps.MapLayerManager;
 import org.dhis2.utils.maps.MapboxExtensionKt;
 import org.dhis2.utils.maps.MarkerUtils;
+import org.dhis2.utils.simprints.SimprintsHelper;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.ValueTypeDeviceRendering;
@@ -95,6 +100,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -113,7 +119,10 @@ import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconOffset;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineColor;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineWidth;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.textAllowOverlap;
+import static com.simprints.libsimprints.Constants.SIMPRINTS_BIOMETRICS_COMPLETE_CHECK;
+import static com.simprints.libsimprints.Constants.SIMPRINTS_IDENTIFICATIONS;
 import static org.dhis2.usescases.eventsWithoutRegistration.eventInitial.EventInitialPresenter.ACCESS_LOCATION_PERMISSION_REQUEST;
+import static org.dhis2.utils.Constants.SIMPRINTS_IDENTIFY_REQUEST;
 import static org.dhis2.utils.analytics.AnalyticsConstants.CHANGE_PROGRAM;
 import static org.dhis2.utils.analytics.AnalyticsConstants.CLICK;
 import static org.dhis2.utils.analytics.AnalyticsConstants.SHOW_HELP;
@@ -242,6 +251,21 @@ public class SearchTEActivity extends ActivityGlobalAbstract implements SearchTE
         updateFiltersSearch(presenter.getQueryData().size());
         binding.setTotalFilters(FilterManager.getInstance().getTotalFilters());
         filtersAdapter.notifyDataSetChanged();
+
+        binding.biometricSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //simprints - Identification Workflow
+                Intent intent = SimprintsHelper.getInstance().simHelper.identify("Module ID");
+                PackageManager manager = getContext().getPackageManager();
+                List<ResolveInfo> infos = manager.queryIntentActivities(intent, 0);
+                if (infos.size() > 0) {
+                     startActivityForResult(intent, SIMPRINTS_IDENTIFY_REQUEST);
+                } else {
+                    Toast.makeText(getContext(), "Please download simprints app!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     @Override
@@ -297,6 +321,23 @@ public class SearchTEActivity extends ActivityGlobalAbstract implements SearchTE
             case Constants.RQ_QR_SCANNER:
                 if (resultCode == RESULT_OK) {
                     scanTextView.updateScanResult(data.getStringExtra(Constants.EXTRA_DATA));
+                }
+                break;
+            case SIMPRINTS_IDENTIFY_REQUEST:
+                if (resultCode == RESULT_OK) {
+                    boolean check = data.getBooleanExtra(SIMPRINTS_BIOMETRICS_COMPLETE_CHECK, false);
+                    if (check) {
+                        ArrayList<Identification> identifications = data.getParcelableArrayListExtra(SIMPRINTS_IDENTIFICATIONS);
+                        for (int i = 0; i < identifications.size(); i++) {
+                            identifications.get(i).getGuid();
+                            identifications.get(i).getConfidence();
+                            identifications.get(i).getTier();
+                        }
+                    }else{
+                        //TODO: Biometrics Error
+                    }
+                }else {
+                    Toast.makeText(getContext(), "Biometrics declined", Toast.LENGTH_SHORT).show();
                 }
                 break;
         }

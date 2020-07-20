@@ -47,8 +47,10 @@ public class Constants {
     public static final int GALLERY_REQUEST = 143;
 
     //Simprints App
-    public static final int SIMPRINTS_UNIQUE_REQUEST = 99;
+    public static final int SIMPRINTS_ENROLL_REQUEST = 99;
 
+    public static final int SIMPRINTS_IDENTIFY_REQUEST = 199;
+    
 
     // LOGIN
     public static final String ACCOUNT_RECOVERY = "/dhis-web-commons/security/recovery.action";

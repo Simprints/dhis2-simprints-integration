@@ -39,7 +39,7 @@ import org.dhis2.utils.Constants.ENROLLMENT_UID
 import org.dhis2.utils.Constants.GALLERY_REQUEST
 import org.dhis2.utils.Constants.PROGRAM_UID
 import org.dhis2.utils.Constants.RQ_QR_SCANNER
-import org.dhis2.utils.Constants.SIMPRINTS_UNIQUE_REQUEST
+import org.dhis2.utils.Constants.SIMPRINTS_ENROLL_REQUEST
 import org.dhis2.utils.Constants.TEI_UID
 import org.dhis2.utils.EventMode
 import org.dhis2.utils.FileResourcesUtil
@@ -158,7 +158,7 @@ class EnrollmentActivity : ActivityGlobalAbstract(), EnrollmentView {
                         data.getStringExtra(MapSelectorActivity.DATA_EXTRA), requestCode
                     )
                 }
-                SIMPRINTS_UNIQUE_REQUEST -> {
+                SIMPRINTS_ENROLL_REQUEST -> {
                     val check = data?.getBooleanExtra(SIMPRINTS_BIOMETRICS_COMPLETE_CHECK, false) ?: false
                     if (data != null && check) {
                         //Success!
