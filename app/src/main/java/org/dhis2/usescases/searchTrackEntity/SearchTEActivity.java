@@ -446,8 +446,8 @@ public class SearchTEActivity extends ActivityGlobalAbstract implements SearchTE
                 Trio<PagedList<SearchTeiModel>, String, Boolean> data = presenter.getMessage(searchTeiModels);
                 if (data.val1().isEmpty()) {
                     binding.filterCounter.setVisibility(View.VISIBLE);
-                    binding.searchFilterGeneral.setVisibility(View.VISIBLE);
-
+                    //simprints - search_filter_general should not be visible.
+                    //binding.searchFilterGeneral.setVisibility(View.VISIBLE);
                     binding.messageContainer.setVisibility(View.GONE);
                     binding.scrollView.setVisibility(View.VISIBLE);
                     liveAdapter.submitList(data.val0());
