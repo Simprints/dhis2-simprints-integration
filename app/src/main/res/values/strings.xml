@@ -691,4 +691,8 @@
     <string name="filter_sync_error">Sync Error</string>
     <string name="filter_sync_sms">SMS Synced</string>
     <string name="biometrics_label">Biometrics:</string>
+
+    <string name="biometrics_error_dialog_title">Unexpected error</string>
+    <string name="biometrics_error_dialog_desc">An unexpected error occured.\nPlease try again.</string>
+    <string name="try_again">Try again</string>
 </resources>

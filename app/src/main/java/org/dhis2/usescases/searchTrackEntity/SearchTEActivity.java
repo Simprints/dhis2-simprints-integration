@@ -79,9 +79,11 @@ import org.dhis2.usescases.teiDashboard.TeiDashboardMobileActivity;
 import org.dhis2.utils.ColorUtils;
 import org.dhis2.utils.Constants;
 import org.dhis2.utils.DateUtils;
+import org.dhis2.utils.DialogClickListener;
 import org.dhis2.utils.FileResourcesUtil;
 import org.dhis2.utils.HelpManager;
 import org.dhis2.utils.customviews.CoordinatesView;
+import org.dhis2.utils.customviews.CustomDialog;
 import org.dhis2.utils.customviews.ScanTextView;
 import org.dhis2.utils.filters.FilterManager;
 import org.dhis2.utils.filters.FiltersAdapter;
@@ -167,6 +169,7 @@ public class SearchTEActivity extends ActivityGlobalAbstract implements SearchTE
     private Snackbar downloadingSnackbar;
     private String currentStyle = Style.MAPBOX_STREETS;
     private boolean changingStyle;
+    private CustomDialog biometricsErrorDialog;
     //---------------------------------------------------------------------------------------------
 
     //region LIFECYCLE
@@ -256,16 +259,20 @@ public class SearchTEActivity extends ActivityGlobalAbstract implements SearchTE
             @Override
             public void onClick(View v) {
                 //simprints - Identification Workflow
-                Intent intent = SimprintsHelper.getInstance().simHelper.identify("Module ID");
-                PackageManager manager = getContext().getPackageManager();
-                List<ResolveInfo> infos = manager.queryIntentActivities(intent, 0);
-                if (infos.size() > 0) {
-                     startActivityForResult(intent, SIMPRINTS_IDENTIFY_REQUEST);
-                } else {
-                    Toast.makeText(getContext(), "Please download simprints app!", Toast.LENGTH_SHORT).show();
-                }
+                launchSimprintsApp();
             }
         });
+    }
+
+    private void launchSimprintsApp() {
+        Intent intent = SimprintsHelper.getInstance().simHelper.identify("Module ID");
+        PackageManager manager = getContext().getPackageManager();
+        List<ResolveInfo> infos = manager.queryIntentActivities(intent, 0);
+        if (infos.size() > 0) {
+             startActivityForResult(intent, SIMPRINTS_IDENTIFY_REQUEST);
+        } else {
+            Toast.makeText(getContext(), "Please download simprints app!", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -334,7 +341,7 @@ public class SearchTEActivity extends ActivityGlobalAbstract implements SearchTE
                             identifications.get(i).getTier();
                         }
                     }else{
-                        //TODO: Biometrics Error
+                        showBiometricsErrorDialog();
                     }
                 }else {
                     Toast.makeText(getContext(), "Biometrics declined", Toast.LENGTH_SHORT).show();
@@ -342,6 +349,28 @@ public class SearchTEActivity extends ActivityGlobalAbstract implements SearchTE
                 break;
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void showBiometricsErrorDialog() {
+        String title = getString(R.string.biometrics_error_dialog_title);
+        String desc = getString(R.string.biometrics_error_dialog_desc);
+        String posButton = getString(R.string.try_again);
+        String negButton = getString(R.string.cancel);
+        DialogClickListener dialogClickListener = new DialogClickListener() {
+            @Override
+            public void onPositive() {
+                  launchSimprintsApp();
+            }
+
+            @Override
+            public void onNegative() {
+               if(null != biometricsErrorDialog){
+                   biometricsErrorDialog.dismiss();
+               }
+            }
+        };
+        biometricsErrorDialog = new CustomDialog(getContext(), title, desc, posButton, negButton, 0, dialogClickListener);
+        biometricsErrorDialog.show();
     }
 
     @Override
