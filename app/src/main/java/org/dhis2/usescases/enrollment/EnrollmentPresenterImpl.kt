@@ -607,7 +607,7 @@ class EnrollmentPresenterImpl(
         }
     }
 
-    fun onSimprintsGuidReceived(guid: String) {
+    fun onSimprintsBiometricsCompleted(guid: String) {
         disposable += dataEntryRepository
             .list()
             .map { fieldViewModels ->
@@ -616,9 +616,14 @@ class EnrollmentPresenterImpl(
                 return@map biometricViewModel as EditTextViewModel
             }
             .subscribe(
-                { viewModel -> valueStore.save(viewModel.uid(), guid) },
+                { viewModel -> valueStore.save(viewModel.uid(), guid).blockingFirst() },
                 { Timber.tag(TAG).e(it) }
             )
     }
 
+    /**
+     * See [com.simprints.libsimprints.Constants] for a list of all possible result codes.
+     */
+    fun onSimprintsBiometricsFailure(resultCode: Int) {
+    }
 }

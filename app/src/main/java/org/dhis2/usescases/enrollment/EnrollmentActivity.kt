@@ -159,16 +159,17 @@ class EnrollmentActivity : ActivityGlobalAbstract(), EnrollmentView {
                     )
                 }
                 SIMPRINTS_ENROLL_REQUEST -> {
-                    val check = data?.getBooleanExtra(SIMPRINTS_BIOMETRICS_COMPLETE_CHECK, false) ?: false
-                    if (data != null && check) {
-                        //Success!
-                        val registration: Registration = data.getParcelableExtra(SIMPRINTS_REGISTRATION)
-                        // Now that we have the GUID, find the binding.customEdittext that corresponds to EditTextViewModel with code
-                        // "biometrics" and enter the GUID as the binding.customEdittext.getEditText().setText(GUID);
-                        presenter.onSimprintsGuidReceived(registration.guid)
-                    } else {
-                        //Failed!
-                        Toast.makeText(context, "Failed!", Toast.LENGTH_LONG).show();
+                    if (data != null) {
+                        val check = data.getBooleanExtra(SIMPRINTS_BIOMETRICS_COMPLETE_CHECK, false)
+                        if (check) {
+                            //Success!
+                            val registration: Registration = data.getParcelableExtra(SIMPRINTS_REGISTRATION)
+                            // Now that we have the GUID, find the binding.customEdittext that corresponds to EditTextViewModel with code
+                            // "biometrics" and enter the GUID as the binding.customEdittext.getEditText().setText(GUID);
+                            presenter.onSimprintsBiometricsCompleted(registration.guid)
+                        } else {
+                            presenter.onSimprintsBiometricsFailure(resultCode)
+                        }
                     }
                 }
                 GALLERY_REQUEST -> {
