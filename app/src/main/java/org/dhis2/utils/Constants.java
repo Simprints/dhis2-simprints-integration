@@ -48,9 +48,10 @@ public class Constants {
 
     //Simprints App
     public static final int SIMPRINTS_ENROLL_REQUEST = 99;
-
     public static final int SIMPRINTS_IDENTIFY_REQUEST = 199;
-    
+
+    //Biometrics
+    public static final String BIOMETRICS_FAILURE_PATTERN = "$$$$BIOMETRICS_FAILED$$$$";
 
     // LOGIN
     public static final String ACCOUNT_RECOVERY = "/dhis-web-commons/security/recovery.action";

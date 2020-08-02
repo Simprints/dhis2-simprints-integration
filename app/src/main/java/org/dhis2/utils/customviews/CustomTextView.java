@@ -30,6 +30,7 @@ import com.google.android.material.textfield.TextInputLayout;
 
 import org.dhis2.BR;
 import org.dhis2.R;
+import org.dhis2.utils.Constants;
 import org.dhis2.utils.ObjectStyleUtils;
 import org.dhis2.utils.simprints.SimprintsHelper;
 import org.hisp.dhis.android.core.common.ObjectStyle;
@@ -67,6 +68,7 @@ public class CustomTextView extends FieldLayout {
     private View descriptionLabel;
     private View dummy;
     private TextView biometricsButton;
+    private TextView biometricsStatus;
 
     public CustomTextView(Context context) {
         super(context);
@@ -104,6 +106,7 @@ public class CustomTextView extends FieldLayout {
         descriptionLabel = binding.getRoot().findViewById(R.id.descriptionLabel);
         dummy = findViewById(R.id.dummyFocusView);
         biometricsButton = findViewById(R.id.biometricButton);
+        biometricsStatus = findViewById(R.id.biometricsStatus);
 
         descIcon = findViewById(R.id.descIcon);
 
@@ -227,30 +230,68 @@ public class CustomTextView extends FieldLayout {
         setLayout();
     }
 
-    public void setAsBiometrics() {
+    public void setAsBiometrics(String value) {
         ViewGroup v = (ViewGroup)findViewById(R.id.rootView);
         for (int i = 0; i < v.getChildCount(); i++) {
             View current = v.getChildAt(i);
             current.setVisibility(View.GONE);
         }
-        biometricsButton.setVisibility(View.VISIBLE);
 
-        biometricsButton.setOnClickListener(new OnClickListener() {
+        if(value !=null && value.length() > 0){
+            if(value.equalsIgnoreCase(Constants.BIOMETRICS_FAILURE_PATTERN)){
+                onFailure();
+            }else {
+                onSuccess();
+            }
+        }else {
+            onInitial();
+        }
+    }
+
+    private void launchSimprints() {
+        //Launch Simprints App Intent - ProjectId, UserId, ModuleId.
+        Intent intent = SimprintsHelper.getInstance().simHelper.register("Module ID");
+
+        PackageManager manager = getContext().getPackageManager();
+        List<ResolveInfo> infos = manager.queryIntentActivities(intent, 0);
+        if (infos.size() > 0) {
+            ((Activity)getContext()).startActivityForResult(intent, SIMPRINTS_ENROLL_REQUEST);
+        } else {
+            Toast.makeText(getContext(), "Please download simprints app!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    void onInitial(){
+        biometricsButton.setOnClickListener(bioMetricsClickListener());
+        biometricsButton.setVisibility(VISIBLE);
+    }
+
+    void onSuccess(){
+        biometricsStatus.setBackgroundColor(getContext().getResources().getColor(R.color.green_7ed));
+        biometricsStatus.setText("BIOMETRICS COMPLETED");
+        biometricsStatus.setVisibility(VISIBLE);
+
+        biometricsButton.setVisibility(GONE);
+    }
+
+    void onFailure(){
+        biometricsStatus.setBackgroundColor(getContext().getResources().getColor(R.color.red_060));
+        biometricsStatus.setText("BIOMETRICS DECLINED");
+        biometricsStatus.setVisibility(VISIBLE);
+
+        biometricsButton.setText("TRY AGAIN");
+        biometricsButton.setBackgroundColor(getContext().getResources().getColor(R.color.gray_979));
+        biometricsButton.setOnClickListener(bioMetricsClickListener());
+        biometricsButton.setVisibility(VISIBLE);
+    }
+
+    private OnClickListener bioMetricsClickListener(){
+        return new OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                //Launch Simprints App Intent - ProjectId, UserId, ModuleId.
-                Intent intent = SimprintsHelper.getInstance().simHelper.register("Module ID");
-
-                PackageManager manager = getContext().getPackageManager();
-                List<ResolveInfo> infos = manager.queryIntentActivities(intent, 0);
-                if (infos.size() > 0) {
-                    ((Activity)getContext()).startActivityForResult(intent, SIMPRINTS_ENROLL_REQUEST);
-                } else {
-                    Toast.makeText(biometricsButton.getContext(), "Please download simprints app!", Toast.LENGTH_SHORT).show();
-                }
+                launchSimprints();
             }
-        });
+        };
     }
 
     public void setValueType(ValueType valueType) {

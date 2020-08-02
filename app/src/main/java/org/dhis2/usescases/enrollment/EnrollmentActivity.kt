@@ -163,12 +163,14 @@ class EnrollmentActivity : ActivityGlobalAbstract(), EnrollmentView {
                         val check = data.getBooleanExtra(SIMPRINTS_BIOMETRICS_COMPLETE_CHECK, false)
                         if (check) {
                             //Success!
-                            val registration: Registration = data.getParcelableExtra(SIMPRINTS_REGISTRATION)
+                            val registration: Registration? = data.getParcelableExtra(SIMPRINTS_REGISTRATION);
                             // Now that we have the GUID, find the binding.customEdittext that corresponds to EditTextViewModel with code
                             // "biometrics" and enter the GUID as the binding.customEdittext.getEditText().setText(GUID);
-                            presenter.onSimprintsBiometricsCompleted(registration.guid)
-                        } else {
-                            presenter.onSimprintsBiometricsFailure(resultCode)
+                            if(registration == null){
+                                presenter.onSimprintsBiometricsFailure();
+                            }else {
+                                presenter.onSimprintsBiometricsCompleted(registration?.guid)
+                            }
                         }
                     }
                 }

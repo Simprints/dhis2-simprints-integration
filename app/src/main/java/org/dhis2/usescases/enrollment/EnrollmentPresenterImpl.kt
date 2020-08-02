@@ -23,10 +23,7 @@ import org.dhis2.data.forms.dataentry.fields.option_set.OptionSetViewModel
 import org.dhis2.data.forms.dataentry.fields.section.SectionViewModel
 import org.dhis2.data.forms.dataentry.fields.spinner.SpinnerViewModel
 import org.dhis2.data.schedulers.SchedulerProvider
-import org.dhis2.utils.DhisTextUtils
-import org.dhis2.utils.Result
-import org.dhis2.utils.RulesActionCallbacks
-import org.dhis2.utils.RulesUtilsProviderImpl
+import org.dhis2.utils.*
 import org.dhis2.utils.analytics.AnalyticsHelper
 import org.dhis2.utils.analytics.CLICK
 import org.dhis2.utils.analytics.DELETE_AND_BACK
@@ -582,6 +579,9 @@ class EnrollmentPresenterImpl(
     }
 
     fun dataIntegrityCheck(): Boolean {
+
+        checkIfBiometricValueValid();
+
         return when {
             uniqueFields.isNotEmpty() -> {
                 view.showInfoDialog(
@@ -607,23 +607,55 @@ class EnrollmentPresenterImpl(
         }
     }
 
+    private fun checkIfBiometricValueValid() {
+        disposable += dataEntryRepository
+                .list()
+                .map { fieldViewModels ->
+                    val biometricViewModel = fieldViewModels.firstOrNull { it is EditTextViewModel && it.code()!=null && it.code().equals("biometrics") }
+                            ?: throw IllegalStateException("Shouldn't have been allowed to start Simprints without Biometrics ViewModel")
+                    return@map biometricViewModel as EditTextViewModel
+                }
+                .subscribe(
+                        { viewModel ->
+                                if(viewModel.value().equals(Constants.BIOMETRICS_FAILURE_PATTERN)){
+                                    valueStore.save(viewModel.uid(), null).blockingFirst()
+                                }
+                        },
+                        { Timber.tag(TAG).e(it) }
+                )
+
+    }
+
     fun onSimprintsBiometricsCompleted(guid: String) {
         disposable += dataEntryRepository
             .list()
             .map { fieldViewModels ->
-                val biometricViewModel = fieldViewModels.firstOrNull { it is EditTextViewModel && it.code() == "biometrics" }
+                val biometricViewModel = fieldViewModels.firstOrNull { it is EditTextViewModel && it.code()!=null && it.code().equals("biometrics") }
                     ?: throw IllegalStateException("Shouldn't have been allowed to start Simprints without Biometrics ViewModel")
                 return@map biometricViewModel as EditTextViewModel
             }
             .subscribe(
-                { viewModel -> valueStore.save(viewModel.uid(), guid).blockingFirst() },
+                { viewModel -> valueStore.save(viewModel.uid(), guid).blockingFirst()
+                  updateFields()
+                },
                 { Timber.tag(TAG).e(it) }
             )
     }
 
-    /**
-     * See [com.simprints.libsimprints.Constants] for a list of all possible result codes.
-     */
-    fun onSimprintsBiometricsFailure(resultCode: Int) {
+    fun onSimprintsBiometricsFailure() {
+        disposable += dataEntryRepository
+                .list()
+                .map { fieldViewModels ->
+                    val biometricViewModel = fieldViewModels.firstOrNull { it is EditTextViewModel && it.code()!=null && it.code().equals("biometrics") }
+                            ?: throw IllegalStateException("Shouldn't have been allowed to start Simprints without Biometrics ViewModel")
+                    return@map biometricViewModel as EditTextViewModel
+                }
+                .subscribe(
+                        { viewModel -> valueStore.save(viewModel.uid(), Constants.BIOMETRICS_FAILURE_PATTERN).blockingFirst()
+                            updateFields()
+                        },
+                        { Timber.tag(TAG).e(it) }
+                )
+
     }
 }
