@@ -1,11 +1,7 @@
 package org.dhis2.utils.customviews;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.text.InputFilter;
@@ -20,7 +16,6 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.core.content.res.ResourcesCompat;
 import androidx.databinding.DataBindingUtil;
@@ -30,18 +25,14 @@ import com.google.android.material.textfield.TextInputLayout;
 
 import org.dhis2.BR;
 import org.dhis2.R;
-import org.dhis2.utils.Constants;
 import org.dhis2.utils.ObjectStyleUtils;
-import org.dhis2.utils.simprints.SimprintsHelper;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.program.ProgramStageSectionRenderingType;
 
-import java.util.List;
 import java.util.regex.Pattern;
 
 import static android.text.TextUtils.isEmpty;
-import static org.dhis2.utils.Constants.SIMPRINTS_ENROLL_REQUEST;
 
 /**
  * QUADRAM. Created by frodriguez on 1/17/2018.
