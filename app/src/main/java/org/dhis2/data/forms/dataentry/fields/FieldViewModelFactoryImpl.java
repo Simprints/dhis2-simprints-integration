@@ -14,6 +14,7 @@ import org.dhis2.data.forms.dataentry.fields.picture.PictureViewModel;
 import org.dhis2.data.forms.dataentry.fields.radiobutton.RadioButtonViewModel;
 import org.dhis2.data.forms.dataentry.fields.scan.ScanTextViewModel;
 import org.dhis2.data.forms.dataentry.fields.spinner.SpinnerViewModel;
+import org.dhis2.data.forms.dataentry.fields.statusbutton.StatusButtonViewModel;
 import org.dhis2.data.forms.dataentry.fields.unsupported.UnsupportedViewModel;
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.ObjectStyle;
@@ -68,6 +69,10 @@ public final class FieldViewModelFactoryImpl implements FieldViewModelFactory {
                 }
             } else
                 return ImageViewModel.create(id, label, optionSet, value, section, editable, mandatory, description, objectStyle); //transforms option set into image option selector
+        }
+
+        if(label.equalsIgnoreCase("biometrics")){
+            return StatusButtonViewModel.create(id, label, mandatory, value, section, description, objectStyle);
         }
 
         switch (type) {

@@ -81,6 +81,7 @@ public class EditTextCustomHolder extends FormViewHolder {
                 sendAction();
             }
         });
+
     }
 
     private void sendAction() {
@@ -103,41 +104,26 @@ public class EditTextCustomHolder extends FormViewHolder {
         this.editTextModel = (EditTextViewModel) model;
         fieldUid = model.uid();
 
-        String code = ((EditTextViewModel) model).code();
-        if (code != null && code.toLowerCase().equals("biometrics")) {
-
-            binding.customEdittext.setAsBiometrics();
-
-        } else {
-
-            binding.customEdittext.setValueType(editTextModel.valueType());
-
-            binding.customEdittext.setObjectStyle(model.objectStyle());
-            if (model.objectStyle() != null) {
-                objectStyle = model.objectStyle();
-            }
-            label = new StringBuilder(model.label());
-            binding.customEdittext.setLabel(model.label(), model.mandatory());
-            binding.customEdittext.setHint(editTextModel.hint());
-            descriptionText = model.description();
-            binding.customEdittext.setDescription(descriptionText);
-
-            binding.customEdittext.setText(editTextModel.value());
-
-            binding.customEdittext.setWarning(model.warning(), model.error());
-
-            if (!isSearchMode && model.value() != null && !model.value().isEmpty()
-                    && editTextModel.fieldMask() != null && !model.value().matches(editTextModel.fieldMask()))
-                binding.customEdittext.setWarning(binding.getRoot().getContext().getString(R.string.wrong_pattern), "");
-
-            binding.customEdittext.setEditable(model.editable());
-
-            setRenderingType(editTextModel.fieldRendering());
-
-            initFieldFocus();
-
-            setLongClick();
+        binding.customEdittext.setValueType(editTextModel.valueType());
+        binding.customEdittext.setObjectStyle(model.objectStyle());
+        if (model.objectStyle() != null) {
+            objectStyle = model.objectStyle();
         }
+        label = new StringBuilder(model.label());
+        binding.customEdittext.setLabel(model.label(), model.mandatory());
+        binding.customEdittext.setHint(editTextModel.hint());
+        descriptionText = model.description();
+        binding.customEdittext.setDescription(descriptionText);
+        binding.customEdittext.setText(editTextModel.value());
+        binding.customEdittext.setWarning(model.warning(), model.error());
+        if (!isSearchMode && model.value() != null && !model.value().isEmpty()
+                && editTextModel.fieldMask() != null && !model.value().matches(editTextModel.fieldMask()))
+            binding.customEdittext.setWarning(binding.getRoot().getContext().getString(R.string.wrong_pattern), "");
+        binding.customEdittext.setEditable(model.editable());
+        setRenderingType(editTextModel.fieldRendering());
+        initFieldFocus();
+        setLongClick();
+
     }
 
     private void checkAutocompleteRendering() {

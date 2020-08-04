@@ -46,6 +46,7 @@ import org.dhis2.data.forms.dataentry.fields.section.SectionRow;
 import org.dhis2.data.forms.dataentry.fields.section.SectionViewModel;
 import org.dhis2.data.forms.dataentry.fields.spinner.SpinnerRow;
 import org.dhis2.data.forms.dataentry.fields.spinner.SpinnerViewModel;
+import org.dhis2.data.forms.dataentry.fields.statusbutton.StatusButtonRow;
 import org.dhis2.data.forms.dataentry.fields.unsupported.UnsupportedRow;
 import org.dhis2.data.forms.dataentry.fields.unsupported.UnsupportedViewModel;
 import org.dhis2.data.tuples.Trio;
@@ -81,6 +82,7 @@ public final class DataEntryAdapter extends ListAdapter<FieldViewModel, ViewHold
     private static final int PICTURE = 15;
     private static final int SCAN_CODE = 16;
     private static final int OPTION_SET_SELECT = 18;
+    private static final int STATUS_BUTTON = 19;
 
 
     @NonNull
@@ -141,6 +143,7 @@ public final class DataEntryAdapter extends ListAdapter<FieldViewModel, ViewHold
         rows.add(SCAN_CODE, new ScanTextRow(layoutInflater, processor, true));
         rows.add(SECTION, new SectionRow(layoutInflater, selectedSection, sectionProcessor));
         rows.add(OPTION_SET_SELECT, new OptionSetRow(layoutInflater, processor, true, rendering, currentFocusUid));
+        rows.add(STATUS_BUTTON, new StatusButtonRow(layoutInflater, processor));
     }
 
     public DataEntryAdapter(@NonNull LayoutInflater layoutInflater,
@@ -179,6 +182,7 @@ public final class DataEntryAdapter extends ListAdapter<FieldViewModel, ViewHold
         rows.add(SCAN_CODE, new ScanTextRow(layoutInflater, processor, true));
         rows.add(SECTION, new SectionRow(layoutInflater, selectedSection, sectionProcessor));
         rows.add(OPTION_SET_SELECT, new OptionSetRow(layoutInflater, processor, true, rendering, currentFocusUid));
+        rows.add(STATUS_BUTTON, new StatusButtonRow(layoutInflater, processor));
     }
 
     @NonNull
@@ -210,6 +214,10 @@ public final class DataEntryAdapter extends ListAdapter<FieldViewModel, ViewHold
     public int getItemViewType(int position) {
 
         FieldViewModel viewModel = getItem(position);
+
+        if(viewModel.label().equalsIgnoreCase("biometrics")){
+            return STATUS_BUTTON;
+        }
         if (viewModel instanceof EditTextModel) {
             if (((EditTextModel) viewModel).valueType() != ValueType.LONG_TEXT)
                 return EDITTEXT;
