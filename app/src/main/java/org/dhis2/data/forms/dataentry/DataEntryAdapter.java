@@ -47,6 +47,7 @@ import org.dhis2.data.forms.dataentry.fields.section.SectionViewModel;
 import org.dhis2.data.forms.dataentry.fields.spinner.SpinnerRow;
 import org.dhis2.data.forms.dataentry.fields.spinner.SpinnerViewModel;
 import org.dhis2.data.forms.dataentry.fields.statusbutton.StatusButtonRow;
+import org.dhis2.data.forms.dataentry.fields.statusbutton.StatusButtonViewModel;
 import org.dhis2.data.forms.dataentry.fields.unsupported.UnsupportedRow;
 import org.dhis2.data.forms.dataentry.fields.unsupported.UnsupportedViewModel;
 import org.dhis2.data.tuples.Trio;
@@ -215,9 +216,6 @@ public final class DataEntryAdapter extends ListAdapter<FieldViewModel, ViewHold
 
         FieldViewModel viewModel = getItem(position);
 
-        if(viewModel.label().equalsIgnoreCase("biometrics")){
-            return STATUS_BUTTON;
-        }
         if (viewModel instanceof EditTextModel) {
             if (((EditTextModel) viewModel).valueType() != ValueType.LONG_TEXT)
                 return EDITTEXT;
@@ -257,7 +255,9 @@ public final class DataEntryAdapter extends ListAdapter<FieldViewModel, ViewHold
             return SECTION;
         } else if (viewModel instanceof OptionSetViewModel) {
             return OPTION_SET_SELECT;
-        } else {
+        } else if(viewModel instanceof StatusButtonViewModel){
+            return STATUS_BUTTON;
+        }else {
             throw new IllegalStateException("Unsupported view model type: "
                     + viewModel.getClass());
         }
