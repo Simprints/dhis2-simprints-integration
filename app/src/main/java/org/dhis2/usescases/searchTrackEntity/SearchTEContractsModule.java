@@ -92,6 +92,8 @@ public class SearchTEContractsModule {
         void openDashboard(String teiUid, String programUid, String enrollmentUid);
 
         void goToEnrollment(String enrollmentUid, String programUid);
+
+        void sendSimprintsAppData(String sessionId, String guid);
     }
 
     public interface Presenter {
@@ -105,6 +107,8 @@ public class SearchTEContractsModule {
         void onBackClick();
 
         void onClearClick();
+
+        void clearQueryData();
 
         void onFabClick(boolean needsSearch);
 
@@ -155,5 +159,17 @@ public class SearchTEContractsModule {
         int getEnrollmentColor();
 
         void initAssignmentFilter();
+
+        void searchOnBiometrics(String biometricUid, String guid);
+
+        void setBiometricsSearchStatus(boolean status);
+
+        boolean getBiometricsSearchStatus();
+
+        void onNoneOfTheAboveBiometricsMatchButtonClick();
+
+        void storeBiometricsSessionID(String sessionId);
+
+        void setBiometricsSearchGuidData(String guid);
     }
 }

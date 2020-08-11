@@ -42,12 +42,16 @@
         <variable
             name="overdue"
             type="java.lang.Boolean" />
+
+        <variable
+            name="noneOfTheAbove"
+            type="java.lang.Boolean" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="96dp">
+        android:minHeight="150dp">
 
         <ImageView
             android:id="@+id/tracked_entity_image"
@@ -179,6 +183,23 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tracked_entity_image" />
+
+        <Button
+            android:id="@+id/noneOfTheAboveBiometricsMatchButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/gray_b2e"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="NONE OF THE ABOVE"
+            android:textColor="@color/black_de0"
+            android:textSize="20sp"
+            android:visibility="@{noneOfTheAbove?View.VISIBLE:View.GONE}"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:layout_editor_absoluteX="20dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

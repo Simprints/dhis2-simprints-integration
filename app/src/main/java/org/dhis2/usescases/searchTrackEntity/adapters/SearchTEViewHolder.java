@@ -52,6 +52,7 @@ public class SearchTEViewHolder extends RecyclerView.ViewHolder {
         binding.setOverdue(searchTeiModel.isHasOverdue());
         binding.setIsOnline(searchTeiModel.isOnline());
         binding.setSyncState(searchTeiModel.getTei().state());
+        binding.setNoneOfTheAbove(presenter.getBiometricsSearchStatus());
 
         setEnrollment(searchTeiModel.getEnrollments());
         setEnrollmentInfo(searchTeiModel.getEnrollmentInfo());
@@ -75,6 +76,10 @@ public class SearchTEViewHolder extends RecyclerView.ViewHolder {
                 searchTeiModel.getTei().uid(),
                 searchTeiModel.getSelectedEnrollment() != null ? searchTeiModel.getSelectedEnrollment().uid() : null,
                 searchTeiModel.isOnline()));
+
+        binding.noneOfTheAboveBiometricsMatchButton.setOnClickListener(view -> {
+            presenter.onNoneOfTheAboveBiometricsMatchButtonClick();
+        });
 
         File file = new File(searchTeiModel.getProfilePicturePath());
         Drawable placeHolderId = ObjectStyleUtils.getIconResource(itemView.getContext(), searchTeiModel.getDefaultTypeIcon(), R.drawable.photo_temp_gray);

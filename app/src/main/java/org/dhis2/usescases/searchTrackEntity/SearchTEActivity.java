@@ -61,6 +61,7 @@ import com.mapbox.mapboxsdk.style.layers.SymbolLayer;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonOptions;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
 import com.simprints.libsimprints.Identification;
+import com.simprints.libsimprints.RefusalForm;
 
 import org.dhis2.App;
 import org.dhis2.R;
@@ -123,6 +124,8 @@ import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineWidth;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.textAllowOverlap;
 import static com.simprints.libsimprints.Constants.SIMPRINTS_BIOMETRICS_COMPLETE_CHECK;
 import static com.simprints.libsimprints.Constants.SIMPRINTS_IDENTIFICATIONS;
+import static com.simprints.libsimprints.Constants.SIMPRINTS_REFUSAL_FORM;
+import static com.simprints.libsimprints.Constants.SIMPRINTS_SESSION_ID;
 import static org.dhis2.usescases.eventsWithoutRegistration.eventInitial.EventInitialPresenter.ACCESS_LOCATION_PERMISSION_REQUEST;
 import static org.dhis2.utils.Constants.SIMPRINTS_IDENTIFY_REQUEST;
 import static org.dhis2.utils.analytics.AnalyticsConstants.CHANGE_PROGRAM;
@@ -170,6 +173,7 @@ public class SearchTEActivity extends ActivityGlobalAbstract implements SearchTE
     private String currentStyle = Style.MAPBOX_STREETS;
     private boolean changingStyle;
     private CustomDialog biometricsErrorDialog;
+    private String biometricUid;
     //---------------------------------------------------------------------------------------------
 
     //region LIFECYCLE
@@ -269,9 +273,18 @@ public class SearchTEActivity extends ActivityGlobalAbstract implements SearchTE
         PackageManager manager = getContext().getPackageManager();
         List<ResolveInfo> infos = manager.queryIntentActivities(intent, 0);
         if (infos.size() > 0) {
+             initSearchNeeded = false;
              startActivityForResult(intent, SIMPRINTS_IDENTIFY_REQUEST);
         } else {
             Toast.makeText(getContext(), "Please download simprints app!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    @Override
+    public void sendSimprintsAppData(String sessionId, String guid) {
+        if(sessionId != null && guid != null) {
+            SimprintsHelper.getInstance().simHelper.confirmIdentity(getContext(), sessionId, guid);
         }
     }
 
@@ -334,12 +347,36 @@ public class SearchTEActivity extends ActivityGlobalAbstract implements SearchTE
                 if (resultCode == RESULT_OK) {
                     boolean check = data.getBooleanExtra(SIMPRINTS_BIOMETRICS_COMPLETE_CHECK, false);
                     if (check) {
+
                         ArrayList<Identification> identifications = data.getParcelableArrayListExtra(SIMPRINTS_IDENTIFICATIONS);
+                        RefusalForm refusalForm = data.getParcelableExtra(SIMPRINTS_REFUSAL_FORM);
+
+                          //For Testing And Debugging
+//                        bioMetricsGuidList.add("995b1909-2a0c-4204-b0ce-499a3f8111ea");//995b1909-2a0c-4204-b0ce-499a3f8111ea
+//                        bioMetricsGuidList.add("!@#$%^&*()BIOMETRICS_DECLINED"); //!@#$%^&*()BIOMETRICS_DECLINED
+
+                        if(identifications == null && refusalForm != null){
+                            Toast.makeText(getContext(), "Biometrics declined", Toast.LENGTH_SHORT).show();
+                            return;
+                        }else if(identifications == null){
+                            Toast.makeText(getContext(), "User can not be identified!", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        ArrayList<String>bioMetricsGuidList = new ArrayList<>();
+
                         for (int i = 0; i < identifications.size(); i++) {
                             identifications.get(i).getGuid();
                             identifications.get(i).getConfidence();
                             identifications.get(i).getTier();
+                            bioMetricsGuidList.add(identifications.get(i).getGuid());
                         }
+
+                        String sessionId = data.getStringExtra(SIMPRINTS_SESSION_ID);
+                        presenter.storeBiometricsSessionID(sessionId);
+                        presenter.setBiometricsSearchGuidData(bioMetricsGuidList.get(0));
+                        presenter.setBiometricsSearchStatus(true);
+                        presenter.searchOnBiometrics(biometricUid, bioMetricsGuidList.get(0));
                     }else{
                         showBiometricsErrorDialog();
                     }
@@ -478,8 +515,22 @@ public class SearchTEActivity extends ActivityGlobalAbstract implements SearchTE
                         List<ValueTypeDeviceRendering> renderingTypes) {
         //Form has been set.
         FormAdapter formAdapter = (FormAdapter) binding.formRecycler.getAdapter();
+
+
+        findBiometricUid(trackedEntityAttributes);
+
         formAdapter.setList(trackedEntityAttributes, program, queryData, renderingTypes);
         updateFiltersSearch(queryData.size());
+    }
+
+    private void findBiometricUid(List<TrackedEntityAttribute> trackedEntityAttributes) {
+        for(int i=trackedEntityAttributes.size()-1; i>=0; i--){
+            String code = trackedEntityAttributes.get(i).code();
+            if(code != null && code.equalsIgnoreCase("biometrics")){
+                biometricUid = trackedEntityAttributes.get(i).uid();
+                break;
+            }
+        }
     }
 
     @NonNull
@@ -514,6 +565,14 @@ public class SearchTEActivity extends ActivityGlobalAbstract implements SearchTE
         if (!fromRelationship) {
             liveData.observe(this, searchTeiModels -> {
                 Trio<PagedList<SearchTeiModel>, String, Boolean> data = presenter.getMessage(searchTeiModels);
+
+
+                if(presenter.getBiometricsSearchStatus()){
+                    presenter.clearQueryData();
+                }else{
+                    presenter.setBiometricsSearchStatus(false);
+                }
+
                 if (data.val1().isEmpty()) {
                     binding.filterCounter.setVisibility(View.VISIBLE);
                     //simprints - search_filter_general should not be visible.

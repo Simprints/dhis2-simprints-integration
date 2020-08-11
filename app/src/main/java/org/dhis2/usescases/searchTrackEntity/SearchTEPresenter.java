@@ -89,6 +89,9 @@ public class SearchTEPresenter implements SearchTEContractsModule.Presenter {
     private Dialog dialogDisplayed;
 
     private boolean showList = true;
+    private boolean biometricsSearchStatus = false;
+    private String sessionId;
+    private String biometricsSearchGuid = null;
 
     public SearchTEPresenter(SearchTEContractsModule.View view,
                              D2 d2,
@@ -407,6 +410,10 @@ public class SearchTEPresenter implements SearchTEContractsModule.Presenter {
         setProgram(selectedProgram);
     }
 
+    @Override
+    public void clearQueryData(){
+        queryData.clear();
+    }
 
     //endregion
 
@@ -638,10 +645,24 @@ public class SearchTEPresenter implements SearchTEContractsModule.Presenter {
 
     @Override
     public void onTEIClick(String TEIuid, String enrollmentUid, boolean isOnline) {
+
+        if(biometricsSearchStatus){
+            sendSimprintsBiometricsData(biometricsSearchGuid);
+        }
+
         if (!isOnline) {
+            setBiometricsSearchStatus(false);
             openDashboard(TEIuid, enrollmentUid);
-        } else
+        } else {
+            setBiometricsSearchStatus(false);
             downloadTei(TEIuid, enrollmentUid);
+        }
+    }
+
+    private void sendSimprintsBiometricsData(String guid) {
+        if (sessionId != null) {
+             view.sendSimprintsAppData(sessionId, guid);
+        }
     }
 
     @Override
@@ -817,6 +838,42 @@ public class SearchTEPresenter implements SearchTEContractsModule.Presenter {
             view.hideAssignmentFilter();
         }
     }
+
+    @Override
+    public void searchOnBiometrics(String biometricUid, String guid) {
+        queryData.clear();
+        queryData.put(biometricUid, guid);
+        onFabClick(true);
+//        queryProcessor.onNext(queryData);
+    }
+
+    @Override
+    public void setBiometricsSearchStatus(boolean status) {
+        biometricsSearchStatus = status;
+    }
+
+    @Override
+    public boolean getBiometricsSearchStatus() {
+        return biometricsSearchStatus;
+    }
+
+    @Override
+    public void onNoneOfTheAboveBiometricsMatchButtonClick() {
+        if(biometricsSearchStatus){
+             sendSimprintsBiometricsData("none_selected");
+        }
+    }
+
+    @Override
+    public void storeBiometricsSessionID(String sessionId) {
+        this.sessionId = sessionId;
+    }
+
+    @Override
+    public void setBiometricsSearchGuidData(String guid) {
+        this.biometricsSearchGuid = guid;
+    }
+
 
     @RestrictTo(RestrictTo.Scope.TESTS)
     public void setProgramForTesting(Program program) {

@@ -245,10 +245,30 @@ public class FormAdapter extends RecyclerView.Adapter {
         this.queryData = queryData;
         this.program = program;
         this.attributeList = trackedEntityAttributes;
+
+        removeBiometricsAttribute(trackedEntityAttributes);
+
         this.renderingTypes = renderingTypes;
 
         notifyDataSetChanged();
 
+    }
+
+    private void removeBiometricsAttribute(List<TrackedEntityAttribute> trackedEntityAttributes) {
+
+        TrackedEntityAttribute biometricAttributeInstance = null;
+
+        for(int i=trackedEntityAttributes.size()-1; i>=0; i--){
+            String code = trackedEntityAttributes.get(i).code();
+            if(code != null && code.equalsIgnoreCase("biometrics")){
+                biometricAttributeInstance = trackedEntityAttributes.get(i);
+                break;
+            }
+        }
+
+        if(biometricAttributeInstance !=null){
+             attributeList.remove(biometricAttributeInstance);
+        }
     }
 
     @NonNull
