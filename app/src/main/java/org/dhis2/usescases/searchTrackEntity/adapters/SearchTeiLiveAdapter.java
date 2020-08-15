@@ -29,16 +29,21 @@ public class SearchTeiLiveAdapter extends PagedListAdapter<SearchTeiModel, Searc
                 return oldItem.getTei().uid().equals(newItem.getTei().uid()) &&
                         (oldItem.getTei().state() == null && newItem.getTei().state() == null) &&
                         oldItem.getAttributeValues().equals(newItem.getAttributeValues()) &&
-                        oldItem.getProfilePicturePath().equals(newItem.getProfilePicturePath());
+                        oldItem.getProfilePicturePath().equals(newItem.getProfilePicturePath()) &&
+                        (oldItem.isBiometricsSearchInProgress() == newItem.isBiometricsSearchInProgress());
             else {
                 return oldItem.getTei().uid().equals(newItem.getTei().uid()) &&
                         oldItem.getTei().state().equals(newItem.getTei().state()) &&
                         oldItem.getAttributeValues().equals(newItem.getAttributeValues()) &&
                         oldItem.getEnrollments().equals(newItem.getEnrollments()) &&
-                        oldItem.getProfilePicturePath().equals(newItem.getProfilePicturePath());
+                        oldItem.getProfilePicturePath().equals(newItem.getProfilePicturePath()) &&
+                        (oldItem.isBiometricsSearchInProgress() == newItem.isBiometricsSearchInProgress());
             }
         }
     };
+
+
+
     private SearchTEContractsModule.Presenter presenter;
 
     public SearchTeiLiveAdapter(SearchTEContractsModule.Presenter presenter) {

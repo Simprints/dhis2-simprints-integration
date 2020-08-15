@@ -24,6 +24,9 @@ public class SearchTeiModel {
     private Enrollment selectedEnrollment;
     private List<Enrollment> enrollments;
 
+    private boolean biometricsSearchInProgress;
+
+
     public SearchTeiModel() {
         this.tei = null;
         this.selectedEnrollment = null;
@@ -116,5 +119,13 @@ public class SearchTeiModel {
 
     public List<Enrollment> getEnrollments() {
         return enrollments;
+    }
+
+    public void setBiometricsSearchStatus(boolean value) {
+        this.biometricsSearchInProgress = value;
+    }
+
+    public boolean isBiometricsSearchInProgress() {
+        return biometricsSearchInProgress;
     }
 }

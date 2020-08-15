@@ -564,14 +564,22 @@ public class SearchTEActivity extends ActivityGlobalAbstract implements SearchTE
     public void setLiveData(LiveData<PagedList<SearchTeiModel>> liveData) {
         if (!fromRelationship) {
             liveData.observe(this, searchTeiModels -> {
-                Trio<PagedList<SearchTeiModel>, String, Boolean> data = presenter.getMessage(searchTeiModels);
 
 
                 if(presenter.getBiometricsSearchStatus()){
                     presenter.clearQueryData();
+                    for(int i = 0; i < searchTeiModels.size(); i++){
+                        searchTeiModels.get(i).setBiometricsSearchStatus(true);
+                    }
                 }else{
                     presenter.setBiometricsSearchStatus(false);
+
+                    for(int i = 0; i < searchTeiModels.size(); i++){
+                        searchTeiModels.get(i).setBiometricsSearchStatus(false);
+                    }
                 }
+
+                Trio<PagedList<SearchTeiModel>, String, Boolean> data = presenter.getMessage(searchTeiModels);
 
                 if (data.val1().isEmpty()) {
                     binding.filterCounter.setVisibility(View.VISIBLE);
