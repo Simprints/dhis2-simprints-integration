@@ -49,6 +49,7 @@ public class Constants {
     //Simprints App
     public static final int SIMPRINTS_ENROLL_REQUEST = 99;
     public static final int SIMPRINTS_IDENTIFY_REQUEST = 199;
+    public static final int SIMPRINTS_VERIFY_REQUEST = 299;
 
     //Biometrics
     public static final String BIOMETRICS_FAILURE_PATTERN = "$$$$BIOMETRICS_FAILED$$$$";
