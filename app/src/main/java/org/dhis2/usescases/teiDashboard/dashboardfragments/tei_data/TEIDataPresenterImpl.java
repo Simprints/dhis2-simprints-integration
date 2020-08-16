@@ -1,7 +1,6 @@
 package org.dhis2.usescases.teiDashboard.dashboardfragments.tei_data;
 
 import android.content.Intent;
-import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -379,14 +378,13 @@ class TEIDataPresenterImpl implements TEIDataContracts.Presenter {
     }
 
     @Override
-    public void onEventSelected(String uid, EventStatus eventStatus, View sharedView) {
+    public void onEventSelected(String uid, EventStatus eventStatus, View sharedView, String displayName) {
         if (eventStatus == EventStatus.ACTIVE || eventStatus == EventStatus.COMPLETED) {
 
-            //TODO: Check Only For Follow-up Event
             uidForEvent = uid;
             String guid = dashboardModel.getTrackedBiometricEntityValue();
 
-            if(guid!=null) {
+            if(guid!=null && displayName.equalsIgnoreCase("Follow-up")) {
                 launchSimprintsAppForVerification(guid);
             }else {
             launchEventCapture(uid, null, -1);

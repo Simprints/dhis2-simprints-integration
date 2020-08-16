@@ -102,7 +102,7 @@ public class TEIDataContracts {
 
         void onScheduleSelected(String uid, android.view.View sharedView);
 
-        void onEventSelected(String uid, EventStatus eventStatus, android.view.View sharedView);
+        void onEventSelected(String uid, EventStatus eventStatus, android.view.View sharedView, String displayName);
 
         void setDashboardProgram(DashboardProgramModel dashboardModel);
 

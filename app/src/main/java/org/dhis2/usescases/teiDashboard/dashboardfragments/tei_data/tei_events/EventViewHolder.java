@@ -33,6 +33,7 @@ class EventViewHolder extends RecyclerView.ViewHolder {
 
     public void bind(EventViewModel eventModel) {
         ProgramStage programStage = eventModel.getStage();
+        String displayName = programStage.displayName();
         Event event = eventModel.getEvent();
         binding.setEvent(eventModel.getEvent());
         binding.setStage(eventModel.getStage());
@@ -58,7 +59,7 @@ class EventViewHolder extends RecyclerView.ViewHolder {
                     break;
                 case ACTIVE:
                 case COMPLETED:
-                    presenter.onEventSelected(event.uid(), event.status(), binding.sharedView);
+                    presenter.onEventSelected(event.uid(), event.status(), binding.sharedView, displayName);
                     break;
             }
         });
