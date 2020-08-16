@@ -315,6 +315,8 @@ public class TEIDataFragment extends FragmentGlobalAbstract implements TEIDataCo
                         presenter.launchEventCapture(null, dashboardModel.getTrackedBiometricEntityValue(), 0);
                         break;
                 }
+            }else {
+                presenter.launchEventCapture(null, dashboardModel.getTrackedBiometricEntityValue(), 0);
             }
         }
     }
