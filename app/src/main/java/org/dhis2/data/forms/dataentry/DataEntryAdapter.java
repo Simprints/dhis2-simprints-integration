@@ -46,6 +46,8 @@ import org.dhis2.data.forms.dataentry.fields.section.SectionRow;
 import org.dhis2.data.forms.dataentry.fields.section.SectionViewModel;
 import org.dhis2.data.forms.dataentry.fields.spinner.SpinnerRow;
 import org.dhis2.data.forms.dataentry.fields.spinner.SpinnerViewModel;
+import org.dhis2.data.forms.dataentry.fields.status.StatusRow;
+import org.dhis2.data.forms.dataentry.fields.status.StatusViewModel;
 import org.dhis2.data.forms.dataentry.fields.statusbutton.StatusButtonRow;
 import org.dhis2.data.forms.dataentry.fields.statusbutton.StatusButtonViewModel;
 import org.dhis2.data.forms.dataentry.fields.unsupported.UnsupportedRow;
@@ -84,6 +86,7 @@ public final class DataEntryAdapter extends ListAdapter<FieldViewModel, ViewHold
     private static final int SCAN_CODE = 16;
     private static final int OPTION_SET_SELECT = 18;
     private static final int STATUS_BUTTON = 19;
+    private static final int STATUS = 20;
 
 
     @NonNull
@@ -145,6 +148,7 @@ public final class DataEntryAdapter extends ListAdapter<FieldViewModel, ViewHold
         rows.add(SECTION, new SectionRow(layoutInflater, selectedSection, sectionProcessor));
         rows.add(OPTION_SET_SELECT, new OptionSetRow(layoutInflater, processor, true, rendering, currentFocusUid));
         rows.add(STATUS_BUTTON, new StatusButtonRow(layoutInflater, processor));
+        rows.add(STATUS, new StatusRow(layoutInflater, processor));
     }
 
     public DataEntryAdapter(@NonNull LayoutInflater layoutInflater,
@@ -184,6 +188,7 @@ public final class DataEntryAdapter extends ListAdapter<FieldViewModel, ViewHold
         rows.add(SECTION, new SectionRow(layoutInflater, selectedSection, sectionProcessor));
         rows.add(OPTION_SET_SELECT, new OptionSetRow(layoutInflater, processor, true, rendering, currentFocusUid));
         rows.add(STATUS_BUTTON, new StatusButtonRow(layoutInflater, processor));
+        rows.add(STATUS, new StatusRow(layoutInflater, processor));
     }
 
     @NonNull
@@ -257,7 +262,10 @@ public final class DataEntryAdapter extends ListAdapter<FieldViewModel, ViewHold
             return OPTION_SET_SELECT;
         } else if(viewModel instanceof StatusButtonViewModel){
             return STATUS_BUTTON;
-        }else {
+        }else if(viewModel instanceof StatusViewModel){
+            return STATUS;
+        }
+        else {
             throw new IllegalStateException("Unsupported view model type: "
                     + viewModel.getClass());
         }

@@ -143,6 +143,10 @@ public class Constants {
     @Nullable
     public static final String SCAN_RENDERING_TYPE = "SCAN_RENDERING_TYPE";
 
+
+    public static final String BIOMETRICS_GUID = "BIOMETRICS_GUID";
+    public static final String BIOMETRICS_VERIFICATION_STATUS = "BIOMETRICS_VERIFICATION_STATUS";
+    
     private Constants() {
         // hide public constructor
     }

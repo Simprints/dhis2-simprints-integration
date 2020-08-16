@@ -56,4 +56,10 @@ public  abstract class StatusViewModel extends FieldViewModel {
         return new AutoValue_StatusViewModel(uid(), label(), mandatory(), value(), programStageSection(),
                 allowFutureDate(), isEditable, optionSet(), warning(), error(),description(), objectStyle(), null, status());
     }
+
+    @Nonnull
+    public StatusViewModel withValueAndStatus(String data, StatusHolder.ValueStatus status){
+        return new AutoValue_StatusViewModel(uid(), label(), mandatory(), data, programStageSection(),
+                allowFutureDate(), false, optionSet(), warning(), error(),description(), objectStyle(), null, status);
+    }
 }

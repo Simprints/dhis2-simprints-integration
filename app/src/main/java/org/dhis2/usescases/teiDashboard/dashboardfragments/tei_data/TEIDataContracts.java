@@ -74,6 +74,8 @@ public class TEIDataContracts {
         void openOrgUnitTreeSelector(String programUid);
 
         void setEnrollment(Enrollment enrollment);
+
+        void launchSimprintsAppForVerification(Intent simIntent);
     }
 
     public interface Presenter extends AbstractActivityContracts.Presenter {
@@ -115,6 +117,8 @@ public class TEIDataContracts {
         void getEnrollment(String enrollmentUid);
 
         boolean hasAssignment();
+
+        void launchEventCapture(String uid, String guid, int status);
     }
 
 }

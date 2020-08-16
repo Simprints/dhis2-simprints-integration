@@ -22,6 +22,7 @@ import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
+import com.simprints.libsimprints.Verification;
 
 import org.dhis2.Bindings.ExtensionsKt;
 import org.dhis2.R;
@@ -39,6 +40,7 @@ import org.dhis2.utils.FileResourcesUtil;
 import org.dhis2.utils.customviews.CustomDialog;
 import org.dhis2.utils.customviews.FormBottomDialog;
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -50,7 +52,10 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 
+import static org.dhis2.utils.Constants.BIOMETRICS_GUID;
+import static org.dhis2.utils.Constants.BIOMETRICS_VERIFICATION_STATUS;
 import static org.dhis2.utils.Constants.PROGRAM_UID;
+import static org.dhis2.utils.Constants.SIMPRINTS_VERIFY_REQUEST;
 import static org.dhis2.utils.analytics.AnalyticsConstants.CLICK;
 import static org.dhis2.utils.analytics.AnalyticsConstants.DELETE_EVENT;
 import static org.dhis2.utils.analytics.AnalyticsConstants.SHOW_HELP;
@@ -92,12 +97,7 @@ public class EventCaptureActivity extends ActivityGlobalAbstract implements Even
 
         binding.eventTabLayout.setupWithViewPager(binding.eventViewPager);
         binding.eventTabLayout.setTabMode(TabLayout.MODE_FIXED);
-        binding.eventViewPager.setAdapter(new EventCapturePagerAdapter(
-                getSupportFragmentManager(),
-                getContext(),
-                getIntent().getStringExtra(PROGRAM_UID),
-                getIntent().getStringExtra(Constants.EVENT_UID)
-        ));
+        binding.eventViewPager.setAdapter(getAdapter(getIntent().getIntExtra(BIOMETRICS_VERIFICATION_STATUS, -1)));
         presenter.initNoteCounter();
         presenter.init();
     }
@@ -168,7 +168,43 @@ public class EventCaptureActivity extends ActivityGlobalAbstract implements Even
                     scanTextView.updateScanResult(data.getStringExtra(Constants.EXTRA_DATA));
                 }
                 break;
+            case SIMPRINTS_VERIFY_REQUEST:
+                onSimprintsAppResponse(data);
+                break;
         }
+    }
+
+    private void onSimprintsAppResponse(Intent data) {
+        boolean check = data.getBooleanExtra(com.simprints.libsimprints.Constants.SIMPRINTS_BIOMETRICS_COMPLETE_CHECK, false);
+        if(check){
+            Verification verification =
+                    data.getParcelableExtra(com.simprints.libsimprints.Constants.SIMPRINTS_VERIFICATION);
+            if(null != verification) {
+                switch (verification.getTier()) {
+                    case TIER_1:
+                    case TIER_2:
+                    case TIER_3:
+                    case TIER_4:
+                        binding.eventViewPager.setAdapter(getAdapter(1));
+                        break;
+                    case TIER_5:
+                        binding.eventViewPager.setAdapter(getAdapter(0));
+                        break;
+                }
+            }
+        }
+    }
+
+    @NotNull
+    private EventCapturePagerAdapter getAdapter(int verificationStatus) {
+        return new EventCapturePagerAdapter(
+                getSupportFragmentManager(),
+                getContext(),
+                getIntent().getStringExtra(PROGRAM_UID),
+                getIntent().getStringExtra(Constants.EVENT_UID),
+                getIntent().getStringExtra(BIOMETRICS_GUID),
+                verificationStatus
+        );
     }
 
     @Override

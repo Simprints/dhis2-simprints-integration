@@ -2,7 +2,6 @@ package org.dhis2.usescases.eventsWithoutRegistration.eventCapture.EventCaptureF
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -23,7 +22,8 @@ import org.dhis2.data.forms.dataentry.DataEntryArguments;
 import org.dhis2.data.forms.dataentry.fields.FieldViewModel;
 import org.dhis2.data.forms.dataentry.fields.RowAction;
 import org.dhis2.data.forms.dataentry.fields.section.SectionHolder;
-import org.dhis2.data.forms.dataentry.fields.section.SectionViewModel;
+import org.dhis2.data.forms.dataentry.fields.status.StatusHolder;
+import org.dhis2.data.forms.dataentry.fields.status.StatusViewModel;
 import org.dhis2.data.tuples.Trio;
 import org.dhis2.databinding.FormSectionBinding;
 import org.dhis2.databinding.SectionSelectorFragmentBinding;
@@ -38,13 +38,12 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import io.reactivex.Flowable;
 import io.reactivex.processors.FlowableProcessor;
 import io.reactivex.processors.PublishProcessor;
-import kotlin.jvm.functions.Function1;
-import timber.log.Timber;
 
 import static android.text.TextUtils.isEmpty;
+import static org.dhis2.utils.Constants.BIOMETRICS_GUID;
+import static org.dhis2.utils.Constants.BIOMETRICS_VERIFICATION_STATUS;
 
 public class EventCaptureFormFragment extends FragmentGlobalAbstract implements EventCaptureFormView {
 
@@ -60,10 +59,23 @@ public class EventCaptureFormFragment extends FragmentGlobalAbstract implements 
     private FormSectionBinding headerBinding;
     private SectionHolder headerHolder;
 
+    private String biometricsGuid;
+    private int biometricsVerificationStatus;
+
     public static EventCaptureFormFragment newInstance(String eventUid) {
         EventCaptureFormFragment fragment = new EventCaptureFormFragment();
         Bundle args = new Bundle();
         args.putString(Constants.EVENT_UID, eventUid);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    public static EventCaptureFormFragment newInstance(String eventUid, String guid, int status) {
+        EventCaptureFormFragment fragment = new EventCaptureFormFragment();
+        Bundle args = new Bundle();
+        args.putString(Constants.EVENT_UID, eventUid);
+        args.putString(BIOMETRICS_GUID, guid);
+        args.putInt(Constants.BIOMETRICS_VERIFICATION_STATUS, status);
         fragment.setArguments(args);
         return fragment;
     }
@@ -73,6 +85,8 @@ public class EventCaptureFormFragment extends FragmentGlobalAbstract implements 
     public void onAttach(@NotNull Context context) {
         super.onAttach(context);
         this.activity = (EventCaptureActivity) context;
+        this.biometricsGuid = getArguments().getString(BIOMETRICS_GUID);
+        this.biometricsVerificationStatus = getArguments().getInt(BIOMETRICS_VERIFICATION_STATUS);
         activity.eventCaptureComponent.plus(
                 new EventCaptureFormModule(
                         this,
@@ -111,12 +125,25 @@ public class EventCaptureFormFragment extends FragmentGlobalAbstract implements 
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
     public void showFields(@NonNull List<FieldViewModel> updates, @NonNull String lastFocusItem) {
+
+
+        int index = -1;
+
+        for(int i = 0; i< updates.size(); i++){
+            if(updates.get(i).label().equalsIgnoreCase("Biometrics Verification")){
+                index = i;
+            }
+        }
+
+        if(index > 0 ){
+            StatusViewModel statusViewModel = (StatusViewModel) updates.get(index);
+            StatusHolder.ValueStatus status = presenter.calculateVerificationStatus(biometricsVerificationStatus);
+            StatusViewModel newStatusViewModel = statusViewModel.withValueAndStatus(biometricsGuid, status);
+            updates.remove(index);
+            updates.add(index, newStatusViewModel);
+        }
+
 
         if (!isEmpty(lastFocusItem)) {
             dataEntryAdapter.setLastFocusItem(lastFocusItem);

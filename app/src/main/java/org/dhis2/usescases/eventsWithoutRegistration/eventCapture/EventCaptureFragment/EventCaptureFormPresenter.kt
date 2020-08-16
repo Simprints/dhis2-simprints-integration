@@ -3,6 +3,7 @@ package org.dhis2.usescases.eventsWithoutRegistration.eventCapture.EventCaptureF
 import io.reactivex.disposables.CompositeDisposable
 import org.dhis2.data.forms.dataentry.ValueStore
 import org.dhis2.data.forms.dataentry.ValueStoreImpl
+import org.dhis2.data.forms.dataentry.fields.status.StatusHolder
 import org.dhis2.data.schedulers.SchedulerProvider
 import org.dhis2.usescases.eventsWithoutRegistration.eventCapture.EventCaptureContract
 import org.hisp.dhis.android.core.D2
@@ -90,6 +91,16 @@ class EventCaptureFormPresenter(
 
     fun onActionButtonClick() {
         activityPresenter.attempFinish()
+    }
+
+    fun calculateVerificationStatus(biometricsVerificationStatus: Int): StatusHolder.ValueStatus {
+        if(biometricsVerificationStatus == 0){
+            return StatusHolder.ValueStatus.FAILURE;
+        }else if (biometricsVerificationStatus == 1){
+            return StatusHolder.ValueStatus.SUCCESS;
+        }else {
+            return StatusHolder.ValueStatus.NOT_DONE;
+        }
     }
 
 }

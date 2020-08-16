@@ -1,6 +1,7 @@
 package org.dhis2.usescases.teiDashboard.dashboardfragments.tei_data;
 
 import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -54,6 +55,8 @@ import io.reactivex.processors.BehaviorProcessor;
 import timber.log.Timber;
 
 import static android.text.TextUtils.isEmpty;
+import static org.dhis2.utils.Constants.BIOMETRICS_GUID;
+import static org.dhis2.utils.Constants.BIOMETRICS_VERIFICATION_STATUS;
 import static org.dhis2.utils.analytics.AnalyticsConstants.ACTIVE_FOLLOW_UP;
 import static org.dhis2.utils.analytics.AnalyticsConstants.FOLLOW_UP;
 import static org.dhis2.utils.analytics.AnalyticsConstants.SHARE_TEI;
@@ -81,6 +84,8 @@ class TEIDataPresenterImpl implements TEIDataContracts.Presenter {
     private CompositeDisposable compositeDisposable;
     private DashboardProgramModel dashboardModel;
     private String currentStage = null;
+
+    private String uidForEvent;
 
     public TEIDataPresenterImpl(TEIDataContracts.View view, D2 d2,
                                 DashboardRepository dashboardRepository,
@@ -377,14 +382,16 @@ class TEIDataPresenterImpl implements TEIDataContracts.Presenter {
     public void onEventSelected(String uid, EventStatus eventStatus, View sharedView) {
         if (eventStatus == EventStatus.ACTIVE || eventStatus == EventStatus.COMPLETED) {
 
-            // TODO: HILA - OPEN SIMPRINTS INTENT
-            // TODO: HILA - GET THE USER DETAILS AND EXTRACT THE GUID
-            Intent simIntent = SimprintsHelper.getInstance().simHelper.verify("", "");
-            view.openEventCapture(simIntent);
+            //TODO: Check Only For Follow-up Event
+            uidForEvent = uid;
+            String guid = dashboardModel.getTrackedBiometricEntityValue();
 
-//            Intent intent = new Intent(view.getContext(), EventCaptureActivity.class);
-//            intent.putExtras(EventCaptureActivity.getActivityBundle(uid, programUid, EventMode.CHECK));
-//            view.openEventCapture(intent);
+            if(guid!=null) {
+                launchSimprintsAppForVerification(guid);
+            }else {
+            launchEventCapture(uid, null, -1);
+            }
+
         } else {
             Event event = d2.eventModule().events().uid(uid).blockingGet();
             Intent intent = new Intent(view.getContext(), EventInitialActivity.class);
@@ -393,6 +400,24 @@ class TEIDataPresenterImpl implements TEIDataContracts.Presenter {
             ));
             view.openEventInitial(intent);
         }
+    }
+
+    @Override
+    public void launchEventCapture(String uid, String guid, int status) {
+        if(uid == null){
+            uid = uidForEvent;
+        }
+
+        Intent intent = new Intent(view.getContext(), EventCaptureActivity.class);
+        intent.putExtras(EventCaptureActivity.getActivityBundle(uid, programUid, EventMode.CHECK));
+        intent.putExtra(BIOMETRICS_GUID, guid);
+        intent.putExtra(BIOMETRICS_VERIFICATION_STATUS, status);
+        view.openEventCapture(intent);
+    }
+
+    private void launchSimprintsAppForVerification(String guid){
+        Intent simIntent = SimprintsHelper.getInstance().simHelper.verify("MODULE ID", guid);
+        view.launchSimprintsAppForVerification(simIntent);
     }
 
     @Override

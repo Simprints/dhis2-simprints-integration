@@ -178,4 +178,29 @@ public class DashboardProgramModel extends BaseObservable {
 
         return false;
     }
+
+    public String getTrackedBiometricEntityValue(){
+        String biometricUid = null;
+
+        for(ProgramTrackedEntityAttribute trackedEntityAttribute: trackedEntityAttributes){
+            if(trackedEntityAttribute.name().contains("Biometrics")){
+                biometricUid =  trackedEntityAttribute.trackedEntityAttribute().uid();
+                break;
+            }
+        }
+
+        if(null != biometricUid){
+            for(TrackedEntityAttributeValue value: trackedEntityAttributeValues){
+                if(biometricUid.equalsIgnoreCase(value.trackedEntityAttribute())){
+                    if(value==null || value.value().isEmpty()){
+                        return null;
+                    }else{
+                        return value.value();
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
 }

@@ -18,19 +18,32 @@ public class EventCapturePagerAdapter extends FragmentStatePagerAdapter {
     private final Context context;
     private final String programUid;
     private final String eventUid;
+    private final String biometricsGuid;
+    private final int biometricsVerificationStatus;
 
     public EventCapturePagerAdapter(FragmentManager fm, Context context,String programUid, String eventUid) {
         super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         this.context = context;
         this.programUid = programUid;
         this.eventUid = eventUid;
+        biometricsGuid = null;
+        biometricsVerificationStatus = -1;
+    }
+
+    public EventCapturePagerAdapter(FragmentManager fm, Context context,String programUid, String eventUid, String guid, int status) {
+        super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+        this.context = context;
+        this.programUid = programUid;
+        this.eventUid = eventUid;
+        this.biometricsGuid = guid;
+        this.biometricsVerificationStatus = status;
     }
 
     @Override
     public Fragment getItem(int position) {
         switch (position) {
             default:
-                return EventCaptureFormFragment.newInstance(eventUid);
+                return EventCaptureFormFragment.newInstance(eventUid, biometricsGuid, biometricsVerificationStatus);
             case 1:
                 return NotesFragment.newEventInstance(programUid, eventUid);
         }
