@@ -4,7 +4,7 @@ import com.simprints.libsimprints.SimHelper;
 
 public class SimprintsHelper {
 
-    private static final String PROJECT_ID = "RgQQejbb0ulOeViDs9dS";
+    private static final String PROJECT_ID = "";
     private static final String USER_ID = "android";
 
     private static SimprintsHelper instance;
