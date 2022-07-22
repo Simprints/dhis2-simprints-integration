@@ -2,6 +2,7 @@ package org.dhis2.data.forms.dataentry.fields.status;
 
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -22,6 +23,7 @@ import timber.log.Timber;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static org.dhis2.utils.Constants.SIMPRINTS_ENROLL_REQUEST;
 import static org.dhis2.utils.Constants.SIMPRINTS_VERIFY_REQUEST;
 
 /**
@@ -81,13 +83,10 @@ public class StatusHolder extends FormViewHolder {
         }
         Intent simIntent = SimprintsHelper.getInstance().simHelper.verify("MODULE ID", guid);
 
-        PackageManager manager = binding.rootView.getContext().getPackageManager();
-        List<ResolveInfo> infos = manager.queryIntentActivities(simIntent, 0);
-        if (infos.size() > 0) {
+        try {
             ((Activity)binding.rootView.getContext()).startActivityForResult(simIntent, SIMPRINTS_VERIFY_REQUEST);
-        } else {
+        } catch (ActivityNotFoundException exception) {
             Toast.makeText(binding.rootView.getContext(), "Please download simprints app!", Toast.LENGTH_SHORT).show();
-
         }
     }
 }

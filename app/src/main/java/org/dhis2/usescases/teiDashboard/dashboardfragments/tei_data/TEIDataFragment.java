@@ -1,6 +1,8 @@
 package org.dhis2.usescases.teiDashboard.dashboardfragments.tei_data;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -206,12 +208,9 @@ public class TEIDataFragment extends FragmentGlobalAbstract implements TEIDataCo
 
     @Override
     public void launchSimprintsAppForVerification(Intent simIntent) {
-
-        PackageManager manager = getContext().getPackageManager();
-        List<ResolveInfo> infos = manager.queryIntentActivities(simIntent, 0);
-        if (infos.size() > 0) {
-            startActivityForResult(simIntent, SIMPRINTS_VERIFY_REQUEST);
-        } else {
+        try {
+          startActivityForResult(simIntent, SIMPRINTS_VERIFY_REQUEST);
+        } catch (ActivityNotFoundException exception) {
             Toast.makeText(getContext(), "Please download simprints app!", Toast.LENGTH_SHORT).show();
         }
     }

@@ -2,6 +2,7 @@ package org.dhis2.usescases.searchTrackEntity;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -128,6 +129,7 @@ import static com.simprints.libsimprints.Constants.SIMPRINTS_REFUSAL_FORM;
 import static com.simprints.libsimprints.Constants.SIMPRINTS_SESSION_ID;
 import static org.dhis2.usescases.eventsWithoutRegistration.eventInitial.EventInitialPresenter.ACCESS_LOCATION_PERMISSION_REQUEST;
 import static org.dhis2.utils.Constants.SIMPRINTS_IDENTIFY_REQUEST;
+import static org.dhis2.utils.Constants.SIMPRINTS_VERIFY_REQUEST;
 import static org.dhis2.utils.analytics.AnalyticsConstants.CHANGE_PROGRAM;
 import static org.dhis2.utils.analytics.AnalyticsConstants.CLICK;
 import static org.dhis2.utils.analytics.AnalyticsConstants.SHOW_HELP;
@@ -270,12 +272,10 @@ public class SearchTEActivity extends ActivityGlobalAbstract implements SearchTE
 
     private void launchSimprintsApp() {
         Intent intent = SimprintsHelper.getInstance().simHelper.identify("Module ID");
-        PackageManager manager = getContext().getPackageManager();
-        List<ResolveInfo> infos = manager.queryIntentActivities(intent, 0);
-        if (infos.size() > 0) {
-             initSearchNeeded = false;
-             startActivityForResult(intent, SIMPRINTS_IDENTIFY_REQUEST);
-        } else {
+
+        try {
+            startActivityForResult(intent, SIMPRINTS_IDENTIFY_REQUEST);
+        } catch (ActivityNotFoundException exception) {
             Toast.makeText(getContext(), "Please download simprints app!", Toast.LENGTH_SHORT).show();
         }
     }

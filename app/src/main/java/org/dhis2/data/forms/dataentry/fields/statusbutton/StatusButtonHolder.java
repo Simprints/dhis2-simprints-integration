@@ -2,6 +2,7 @@ package org.dhis2.data.forms.dataentry.fields.statusbutton;
 
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -90,12 +91,9 @@ public class StatusButtonHolder extends FormViewHolder {
         //Launch Simprints App Intent - ProjectId, UserId, ModuleId.
         Intent intent = SimprintsHelper.getInstance().simHelper.register("Module ID");
 
-
-        PackageManager manager = binding.rootView.getContext().getPackageManager();
-        List<ResolveInfo> infos = manager.queryIntentActivities(intent, 0);
-        if (infos.size() > 0) {
+        try {
             ((Activity)binding.rootView.getContext()).startActivityForResult(intent, SIMPRINTS_ENROLL_REQUEST);
-        } else {
+        } catch (ActivityNotFoundException exception) {
             Toast.makeText(binding.rootView.getContext(), "Please download simprints app!", Toast.LENGTH_SHORT).show();
         }
     }
